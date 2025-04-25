@@ -1,12 +1,10 @@
 const sectors = [
-  { color: "#FFBC03", text: "#333333", label: "Sweets" },
-  { color: "#FF5A10", text: "#333333", label: "Prize draw" },
-  { color: "#FFBC03", text: "#333333", label: "Sweets" },
-  { color: "#FF5A10", text: "#333333", label: "Prize draw" },
-  { color: "#FFBC03", text: "#333333", label: "Sweets + Prize draw" },
-  { color: "#FF5A10", text: "#333333", label: "You lose" },
-  { color: "#FFBC03", text: "#333333", label: "Prize draw" },
-  { color: "#FF5A10", text: "#333333", label: "Sweets" },
+  { color: "#FFD700", text: "#333333", label: "Màn hình + Bàn phím" },         // vàng kim
+  { color: "#FF6347", text: "#ffffff", label: "Thẻ BHSK Bảo Việt" },           // đỏ cam (tomato)
+  { color: "#7FFFD4", text: "#333333", label: "Máy chạy bộ" },                 // xanh ngọc nhạt (aquamarine)
+  { color: "#9370DB", text: "#ffffff", label: "Thăm bác sỹ" },                 // tím nhạt
+  { color: "#00CED1", text: "#ffffff", label: "Bàn làm việc di động" },       // xanh dương nhạt (dark turquoise)
+  { color: "#FF69B4", text: "#ffffff", label: "Quay lại một lần" },           // hồng (hot pink)
 ];
 
 const events = {
@@ -34,9 +32,12 @@ const PI = Math.PI;
 const TAU = 2 * PI;
 const arc = TAU / sectors.length;
 
+
+
 const friction = 0.991; // 0.995=soft, 0.99=mid, 0.98=hard
 let angVel = 0; // Angular velocity
 let ang = 0; // Angle in radians
+let result = 0;
 
 let spinButtonClicked = false;
 
@@ -59,27 +60,47 @@ function drawSector(sector, i) {
   ctx.rotate(ang + arc / 2);
   ctx.textAlign = "right";
   ctx.fillStyle = sector.text;
-  ctx.font = "bold 30px 'Lato', sans-serif";
+  ctx.font = "bold 25px 'Lato', sans-serif";
   ctx.fillText(sector.label, rad - 10, 10);
   //
 
   ctx.restore();
 }
 
+// function rotate() {
+//   const sector = sectors[getIndex()];
+//   ctx.canvas.style.transform = `rotate(${ang - PI / 2}rad)`;
+
+//   spinEl.textContent = (!angVel && !result )? "HPBD Be Chill" : sector.label;
+//   spinEl.style.background = sector.color;
+//   spinEl.style.color = sector.text;
+// }
 function rotate() {
   const sector = sectors[getIndex()];
   ctx.canvas.style.transform = `rotate(${ang - PI / 2}rad)`;
 
-  spinEl.textContent = !angVel ? "SPIN" : sector.label;
-  spinEl.style.background = sector.color;
-  spinEl.style.color = sector.text;
+  if (!angVel && !result) {
+    // Trước khi quay lần đầu
+    spinEl.textContent = "HPBD Be Chill";
+    spinEl.style.background = "#faedcd"; // màu nền lúc chưa quay
+    spinEl.style.color = "#c1121f";      // chữ trắng
+  } else {
+    // Trong lúc quay hoặc sau khi quay
+    spinEl.textContent = sector.label;
+    spinEl.style.background = sector.color;
+    spinEl.style.color = sector.text;
+  }
 }
+
+
+
 
 function frame() {
   // Fire an event after the wheel has stopped spinning
   if (!angVel && spinButtonClicked) {
     const finalSector = sectors[getIndex()];
     events.fire("spinEnd", finalSector);
+    result = 1;
     spinButtonClicked = false; // reset the flag
     return;
   }
@@ -110,4 +131,10 @@ init();
 
 events.addListener("spinEnd", (sector) => {
   console.log(`Woop! You won ${sector.label}`);
+  spinEl.textContent = `🎉 ${sector.label}`; // Hiển thị kết quả quay
+  spinEl.style.background = sector.color;
+  spinEl.style.color = sector.text;
+
+  // Popup chúc mừng sau khi có kết quả
+  alert(`Chúc mừng bạn! Bạn đã trúng: ${sector.label}`);
 });
