@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<!-- saved from url=(0220)https://fledge.as.criteo.com/interest-group?data=v9IA3VtR9BfTzEQ-Gya5ZemH4VNbS6bCmO3S4DRf8z459LNJy3wtv7KZ1bamIHIRek1QBKmUUxF2E9hBMAmP1_C-TmSGubkuO3Ti-f-jazCfgYcgCzMOkRUr38O7jvhhWPYXP64Q7gOGAjz00lgmf9e6q_wJ3BXj9JflOtoQM6k -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Fledge IFrame</title>
+</head>
+<body>
+
+<script>
+    function getBswIg(src) {
+        const elt = document.createElement("iframe");
+        elt.allow = "join-ad-interest-group";
+        elt.width = "0";
+        elt.height = "0";
+        elt.style.display = "none";
+        elt.title = "BSW IG";
+        elt.src = src;
+
+        document.body.appendChild(elt);
+    }
+
+    if (!navigator.joinAdInterestGroup) {
+        console.log("No fledge for you!");
+    } else {
+        var igs =[{"owner":"https://fledge.as.criteo.com","name":"xnyWLBC3Hp0EIx8AQbjnJQ","lifetimeMs":2592000000,"priorityVector":{"browserSignals.ageInMinutes":-1,"browserSignals.one":-1},"biddingLogicURL":"https://fledge.as.criteo.com/simplebid","biddingWasmHelperURL":"https://fledge.as.criteo.com/criteo.wasm","trustedBiddingSignalsURL":"https://fledge.as.criteo.com/getvalues","trustedBiddingSignalsKeys":["fGvHUymFroBOvGEjqqSPcgkB0wYnc5WTWVvZb3y7a-LaDGreNV9-jIqeeEOj1epmWl4ruLIrEoYRHshZsM1yIbnCaFTzcGu4jJvbsLBH0aeMXOOAl2WwcLRQYgDfoE7c"],"maxTrustedBiddingSignalsURLLength":32768,"userBiddingSignals":{"adData":{}},"updateURL":"https://fledge.as.criteo.com/interest-group/update?key=wVifImY9hIdmCGt3W2l-ZirLU5ghwBn91cTmBlE03WBrwBmsYixX8k4sSUX-9l4BnGcHhPRs8nGnQCMZpFicThoU4cvVENa1fb14XcnKHHrK9WKnHxc6kQJVDW2h_67A","ads":[],"adComponents":[],"trustedBiddingSignalsSlotSizeMode":"slot-size","executionMode":"group-by-origin","sellerCapabilities":{"*":["interest-group-counts","latency-stats"]},"auctionServerRequestFlags":[]}];
+        var errorEndpoint = "https://fledge.as.criteo.com/interest-group/error?pid=116972&eid=251e3487-6202-445e-ae15-9724a100dd4a";
+
+        for (const ig of igs) {
+            navigator.joinAdInterestGroup(ig).catch((e) => navigator.sendBeacon(`${errorEndpoint}&message=${encodeError(e)}`));
+        }
+
+        if (false) {
+            getBswIg("https://dsp-paapi-sandbox.bsw-ig.criteo.com/paapi/trade/dsp/api/interest_group_join/bsw-sb-ig-test-1");
+            getBswIg("https://paa-proxy-dsp.bsw-sb.criteo.com/paapi/paa-proxy/dsp/api/interest_group_join/bsw-sb-ig-paa-proxy");
+        }
+
+        const toLeave =[{"owner":"https://fledge.as.criteo.com","name":"5kVayYdE_ieoZN1FVTKmtA"},{"owner":"https://fledge.as.criteo.com","name":"D0hI_FEUUcHOSA1ZpW948w"},{"owner":"https://fledge.as.criteo.com","name":"RpZE_8gl_YGXwjKUu-R19g"},{"owner":"https://fledge.as.criteo.com","name":"hw1Rd9B9lhfKaxVx6jb8yw"},{"owner":"https://fledge.as.criteo.com","name":"nIneDvyjDEg-VNEPXs5HVA"},{"owner":"https://fledge.as.criteo.com","name":"6zawIujPy2UyHXi-Sd1uqQ"},{"owner":"https://fledge.as.criteo.com","name":"gM4mDE2BQt5xcfj1M-Hz4g"},{"owner":"https://fledge.as.criteo.com","name":"qGZcbvpEHmoz0ZnBZt7lTw"}];
+        for (const ig of toLeave) {
+            navigator.leaveAdInterestGroup(ig).catch((_) => {});
+        }
+    }
+
+    function encodeError(error) {
+        return encodeURIComponent(error.name + ':' + error.message);
+    }
+
+    async function measureAudienceSize() {
+        // Check if the shared storage worklet is available, as the catch block will not be able to handle the error
+        if (!(window?.sharedStorage?.createWorklet && document.featurePolicy?.allowsFeature("shared-storage"))) {
+            return;
+        }
+        // Run audience size measurement operation
+        await window.sharedStorage.createWorklet('https://fledge.as.criteo.com/interest-group/scripts/asw.js').then(async (worklet) => {
+            await worklet.run('audience-size-measurement', {
+                data: {
+                    bucketKey: BigInt('29944836'),
+                    contributionValue:8192}
+            });
+        }).catch((e) => navigator.sendBeacon(`${errorEndpoint}&message=${encodeError(e)}`));
+    }
+
+    async function nsbpDataCollection() {
+        if (!(window?.sharedStorage?.createWorklet && document.featurePolicy?.allowsFeature("shared-storage"))) {
+            return;
+        }
+        await window.sharedStorage.createWorklet('https://fledge.as.criteo.com/nspbws').then(async (worklet) => {
+            await worklet.run('nspbws');
+        }).catch((e) => navigator.sendBeacon(`${errorEndpoint}&message=${encodeError(e)}`));
+    }
+
+    measureAudienceSize();
+    nsbpDataCollection();
+</script>
+
+
+</body></html>
