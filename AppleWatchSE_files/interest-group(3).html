@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<!-- saved from url=(0241)https://fledge.as.criteo.com/interest-group?data=A03-rtEEZ9ldtNm2D1JSHJzIAI7voDN9tJ-2It53FGMPCJcBt4ED9h2n8r-Qvd637pXlGeG5PXkd84lUfsc27fQuv0hW2Gz0IIJh9eLFWezTyjEbAWjirAE05yBAjRd2K0ZdMz6vRkXDn_LAyx56CCvvoew_Yo7CBXJVXEcEE4lkr3S54L_3czZqQKs3rWAq -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Fledge IFrame</title>
+</head>
+<body>
+
+<script>
+    function getBswIg(src) {
+        const elt = document.createElement("iframe");
+        elt.allow = "join-ad-interest-group";
+        elt.width = "0";
+        elt.height = "0";
+        elt.style.display = "none";
+        elt.title = "BSW IG";
+        elt.src = src;
+
+        document.body.appendChild(elt);
+    }
+
+    if (!navigator.joinAdInterestGroup) {
+        console.log("No fledge for you!");
+    } else {
+        var igs =[];
+        var errorEndpoint = "https://fledge.as.criteo.com/interest-group/error?pid=25021&eid=93e7e93d-5891-4f4c-add9-d389b80343d9";
+
+        for (const ig of igs) {
+            navigator.joinAdInterestGroup(ig).catch((e) => navigator.sendBeacon(`${errorEndpoint}&message=${encodeError(e)}`));
+        }
+
+        if (false) {
+            getBswIg("https://dsp-paapi-sandbox.bsw-ig.criteo.com/paapi/trade/dsp/api/interest_group_join/bsw-sb-ig-test-1");
+            getBswIg("https://paa-proxy-dsp.bsw-sb.criteo.com/paapi/paa-proxy/dsp/api/interest_group_join/bsw-sb-ig-paa-proxy");
+        }
+
+        const toLeave =[];
+        for (const ig of toLeave) {
+            navigator.leaveAdInterestGroup(ig).catch((_) => {});
+        }
+    }
+
+    function encodeError(error) {
+        return encodeURIComponent(error.name + ':' + error.message);
+    }
+
+    async function measureAudienceSize() {
+        // Check if the shared storage worklet is available, as the catch block will not be able to handle the error
+        if (!(window?.sharedStorage?.createWorklet && document.featurePolicy?.allowsFeature("shared-storage"))) {
+            return;
+        }
+        // Run audience size measurement operation
+        await window.sharedStorage.createWorklet('https://fledge.as.criteo.com/interest-group/scripts/asw.js').then(async (worklet) => {
+            await worklet.run('audience-size-measurement', {
+                data: {
+                    bucketKey: BigInt('6405380'),
+                    contributionValue:8192}
+            });
+        }).catch((e) => navigator.sendBeacon(`${errorEndpoint}&message=${encodeError(e)}`));
+    }
+
+    async function nsbpDataCollection() {
+        if (!(window?.sharedStorage?.createWorklet && document.featurePolicy?.allowsFeature("shared-storage"))) {
+            return;
+        }
+        await window.sharedStorage.createWorklet('https://fledge.as.criteo.com/nspbws').then(async (worklet) => {
+            await worklet.run('nspbws');
+        }).catch((e) => navigator.sendBeacon(`${errorEndpoint}&message=${encodeError(e)}`));
+    }
+
+    measureAudienceSize();
+    nsbpDataCollection();
+</script>
+
+
+</body></html>

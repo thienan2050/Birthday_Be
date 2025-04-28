@@ -1,0 +1,2 @@
+document.addEventListener("DOMContentLoaded",function(){window.addEventListener('load',function(){UAGBButtonChild.init('.uagb-block-b3c86168')});window.addEventListener('load',function(){UAGBButtonChild.init('.uagb-block-cd379c81')})})
+;

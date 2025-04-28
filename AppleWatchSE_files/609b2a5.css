@@ -1,0 +1,1 @@
+.btn-cta.is-loading{cursor:not-allowed;pointer-events:none;position:relative}.btn-cta.is-loading:after{background:hsla(0,0%,100%,.6);content:"";height:100%;left:0;position:absolute;top:0;width:100%}
